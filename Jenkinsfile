@@ -48,7 +48,7 @@
 */
 
 pipeline { 
-
+    agent any
     environment{ 
     registry = "mauikem/app-backend" 
     registryCredential = 'id-docker-hub'
