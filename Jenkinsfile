@@ -48,25 +48,28 @@
 */
 
 pipeline { 
-    environment { 
+
+    environment{ 
     registry = "mauikem/app-backend" 
     registryCredential = 'id-docker-hub'
     dockerImage = '' 
     } 
 
-        stage( 'Cloning our Git' ) { 
-            steps { 
+        stage('Cloning our Git'){ 
+            steps{ 
                 git 'https://github.com/ammercado/project-typescript.git' 
             } 
          } 
             
-         stage( 'Building our image' ) { 
+         stage('Building our image'){ 
             steps{ 
-                script { dockerImage = docker.build registry + ": $BUILD_NUMBER " } 
+                script { 
+                    dockerImage = docker.build registry + ": $BUILD_NUMBER " 
+                    } 
                 } 
             } 
         
-         stage( 'Deploy our image' ) { 
+         stage('Deploy our image'){ 
             steps{ 
                     script { 
                         docker.withRegistry( '' , registryCredential ) 
@@ -76,11 +79,10 @@ pipeline {
                  } 
             } 
          }
-                 stage( 'Cleaning up' ) { 
+           stage('Cleaning up'){ 
                     steps{ 
                         sh "docker rmi $registry : $BUILD_NUMBER " 
                         } 
                 
-                } 
-   
+          } 
  }
