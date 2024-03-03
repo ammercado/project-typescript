@@ -54,7 +54,6 @@ pipeline {
     dockerImage = '' 
     } 
 
-agent any stages { 
         stage( 'Cloning our Git' ) { 
             steps { 
                 git 'https://github.com/ammercado/project-typescript.git' 
@@ -83,5 +82,5 @@ agent any stages {
                         } 
                 
                 } 
-            } 
+   
  }
