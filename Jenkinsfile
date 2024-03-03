@@ -5,6 +5,7 @@ pipeline {
         CLUSTER_NAME = "cluster-demo"
         LOCATION = "us-central1"
         CREDENTIALS_ID = 'jenkins-k8s'
+        registry = "mauikem/app-backend"
     }
     stages {
         stage('pull from github repo'){
@@ -12,11 +13,21 @@ pipeline {
                 git "https://github.com/ammercado/project-typescript.git"
             }
         }
-        stage('build docker image'){
+       /* stage('build docker image'){
             steps{
                 sh "docker build -u jenkins -t mauikem/app-backend:${env.BUILD_ID} ."                
             }
         }
+       */
+
+         stage( 'build docker image' ) { 
+            steps{ 
+                script { 
+                    dockerImage = docker.build registry + ": ${env.BUILD_ID}" 
+                    } 
+                } 
+            }
+
         stage('push docker image to dockerhub'){
             steps{
                 withCredentials([string(credentialsId: 'id-docker-hub', variable: 'docker_pass')]) {
