@@ -1,4 +1,4 @@
-pipeline {
+/*pipeline {
     agent any
     environment {
         PROJECT_ID = "jenkins-415921"
@@ -13,12 +13,12 @@ pipeline {
                 git "https://github.com/ammercado/project-typescript.git"
             }
         }
-       /* stage('build docker image'){
+        stage('build docker image'){
             steps{
                 sh "docker build -u jenkins -t mauikem/app-backend:${env.BUILD_ID} ."                
             }
         }
-       */
+       
 
          stage( 'build docker image' ) { 
             steps{ 
@@ -45,3 +45,34 @@ pipeline {
         }
     }
 }
+*/
+
+pipeline { 
+    environment { 
+    registry = "mauikem/app-backend" 
+    registryCredential = 'id-docker-hub'
+    dockerImage = '' 
+    } 
+    agent any stages { 
+        stage( 'Cloning our Git' ) { 
+            steps { git 'https://github.com/ammercado/project-typescript.git' 
+            } 
+         } 
+            
+         stage( 'Building our image' ) { 
+            steps{ 
+                script { dockerImage = docker.build registry + ": $BUILD_NUMBER " } 
+                } 
+                } 
+            stage( 'Deploy our image' ) { 
+                steps{ 
+                script { docker.withRegistry( '' , registryCredential ) 
+                { dockerImage.push() } 
+                } 
+                } 
+                }
+                 stage( 'Cleaning up' ) { steps{ sh "docker rmi $registry : $BUILD_NUMBER " } 
+                
+                } 
+            } 
+        }
