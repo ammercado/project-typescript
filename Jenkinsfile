@@ -14,7 +14,7 @@ pipeline {
         }
         stage('build docker image'){
             steps{
-                sh "docker build -t mauikem/app-backend:${env.BUILD_ID} ."                
+                sh "docker build -u root -t mauikem/app-backend:${env.BUILD_ID} ."                
             }
         }
         stage('push docker image to dockerhub'){
