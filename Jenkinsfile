@@ -5,7 +5,7 @@
         CLUSTER_NAME = "cluster-demo"
         LOCATION = "us-central1"
         CREDENTIALS_ID = 'jenkins-k8s'
-        registry = "mauikem/app-backend"
+        registry = "mauikem/dockerImageapp-backend"
     }
     stages {
         stage('pull from github repo'){
@@ -51,9 +51,9 @@ pipeline {
     agent any
 
     environment { 
-    registry = "mauikem/app-backend" 
-    registryCredential = 'id-docker-hub'
-    dockerImage = '' 
+        REGISTRY = "mauikem/app-backend" 
+        REGISTRYCREDENTIAL = 'id-docker-hub'
+        DOCKERIMAGE = '' 
     }
     
     stages {
@@ -67,7 +67,7 @@ pipeline {
         stage('Building our image') { 
             steps { 
                 script { 
-                    dockerImage = docker.build registry + ": $BUILD_NUMBER " 
+                    DOCKERIMAGE = docker.build REGISTRY + ": $BUILD_NUMBER " 
                 } 
             } 
         }
@@ -75,9 +75,9 @@ pipeline {
         stage('Deploy our image') { 
             steps{ 
                 script { 
-                    docker.withRegistry( '' , registryCredential ) 
+                    docker.withRegistry( '' , REGISTRYCREDENTIAL ) 
                     { 
-                         dockerImage.push() 
+                        DOCKERIMAGE.push() 
                     } 
                 } 
             } 
